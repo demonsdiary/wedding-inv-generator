@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Digital Wedding Invitation Generator</title>
+  <title>Digital Wedding Invitation</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -67,18 +67,19 @@
     .theme-sage .badge-btn { background-color: #15803d; color: #ffffff; }
   </style>
 </head>
-<body class="bg-slate-100 font-sans-body text-slate-800 min-h-screen">
+<body class="bg-slate-100 font-sans-body text-slate-800 min-h-screen flex flex-col justify-between">
 
   <!-- Header -->
-  <header class="bg-slate-900 text-white py-6 shadow-md text-center">
-    <h1 class="text-3xl font-bold font-serif-title tracking-widest">AURA INVITATIONS</h1>
-    <p class="text-xs uppercase tracking-widest text-slate-400 mt-1">Free AI Digital Wedding Invitation Platform</p>
+  <header class="bg-slate-900 text-white py-4 shadow-md text-center">
+    <h1 class="text-2xl font-bold font-serif-title tracking-widest">WEDDING INVITATION</h1>
+    <p id="headerSubtitle" class="text-[11px] uppercase tracking-widest text-slate-400 mt-0.5">Digital Celebration</p>
   </header>
 
-  <main class="max-w-7xl mx-auto p-4 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+  <!-- MAIN CONTAINER (Layout shifts automatically if recipient link) -->
+  <main id="mainContainer" class="max-w-7xl mx-auto p-4 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center justify-center flex-1 w-full">
     
-    <!-- LEFT: FORM CONTROLS (5 cols) -->
-    <section class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4 max-h-[90vh] overflow-y-auto">
+    <!-- LEFT: FORM CONTROLS (Hidden for guests viewing a shared link) -->
+    <section id="editorPanel" class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4 max-h-[85vh] overflow-y-auto">
       <h2 class="text-xl font-semibold text-slate-800 flex items-center gap-2">
         <i class="fa-solid fa-sliders text-rose-500"></i> Customize Details
       </h2>
@@ -147,7 +148,7 @@
           <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Gemini API Key (Optional AI Writer)</label>
           <div class="flex gap-2">
             <input type="password" id="apiKey" placeholder="Paste API Key" class="flex-1 border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-rose-500 outline-none">
-            <button type="button" id="aiBtn" class="bg-rose-600 hover:bg-rose-700 text-white px-4 rounded-lg text-xs font-medium transition">
+            <button type="button" id="aiBtn" class="bg-rose-600 hover:bg-rose-700 text-white px-4 rounded-lg text-xs font-medium transition flex items-center gap-1">
               <i class="fa-solid fa-wand-magic-sparkles"></i> AI Write
             </button>
           </div>
@@ -166,8 +167,8 @@
       </form>
     </section>
 
-    <!-- RIGHT: LIVE PREVIEW TEMPLATE & RSVP SECTION (7 cols) -->
-    <section class="lg:col-span-7 flex flex-col items-center justify-start space-y-6">
+    <!-- RIGHT: INVITATION CARD & RSVP SECTION -->
+    <section id="previewSection" class="lg:col-span-12 flex flex-col items-center justify-center space-y-6">
       
       <!-- Card Container for html2canvas -->
       <div id="cardContainer" class="p-2 bg-transparent">
@@ -249,6 +250,10 @@
     </section>
 
   </main>
+
+  <footer class="text-center py-4 text-xs text-slate-400">
+    Digital Wedding Invitation Platform
+  </footer>
 
   <script>
     const themeSelect = document.getElementById('themeSelect');
@@ -357,9 +362,25 @@
       window.location.href = `mailto:${targetEmail}?subject=${subject}&body=${body}`;
     });
 
-    // URL Query Parameters Sharing
+    // URL Query Parameters Sharing & Recipient Mode Detection
     function loadFromUrlParams() {
       const urlParams = new URLSearchParams(window.location.search);
+      
+      // If query parameters exist, this is a recipient opening a shared link!
+      if (urlParams.toString().length > 0) {
+        // Hide the editor panel completely
+        document.getElementById('editorPanel').classList.add('hidden');
+        
+        // Make preview section span full width and center it
+        const previewSec = document.getElementById('previewSection');
+        previewSec.className = "col-span-12 flex flex-col items-center justify-center space-y-6";
+
+        // Update header for guest view
+        if (urlParams.has('g') && urlParams.has('b')) {
+          document.getElementById('headerSubtitle').textContent = `${urlParams.get('g')} & ${urlParams.get('b')}'s Wedding`;
+        }
+      }
+
       if (urlParams.has('g')) groomInput.value = urlParams.get('g');
       if (urlParams.has('b')) brideInput.value = urlParams.get('b');
       if (urlParams.has('d')) dateInput.value = urlParams.get('d');
@@ -398,7 +419,7 @@
       const shareableUrl = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
       
       navigator.clipboard.writeText(shareableUrl).then(() => {
-        alert("✨ Shareable invitation URL copied to clipboard!");
+        alert("✨ Shareable recipient invitation URL copied to clipboard!\n\nWhen guests open this link, they will see ONLY the invitation card and RSVP form without the editor.");
       }).catch(err => {
         console.error("Clipboard Error: ", err);
       });
