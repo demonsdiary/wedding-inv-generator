@@ -662,4 +662,254 @@
         previewImg.src = uploadedPhotoArray[0];
         photoContainer.classList.remove('hidden');
       } else {
-        photoContainer.classList.add('
+        photoContainer.classList.add('hidden');
+      }
+    }
+
+    // Theme Switcher
+    themeSelect.addEventListener('change', (e) => {
+      const animClass = animSelect.value !== 'none' ? animSelect.value : '';
+      cardTemplate.className = `${e.target.value} ${animClass} w-[380px] sm:w-[420px] rounded-3xl p-6 sm:p-8 shadow-2xl text-center relative overflow-hidden transition-all duration-300 flex flex-col justify-between`;
+    });
+
+    // Animation Switcher
+    animSelect.addEventListener('change', (e) => {
+      themeSelect.dispatchEvent(new Event('change'));
+    });
+
+    // Music Selector & Auto-Play
+    function playSelectedAudio() {
+      const selectedTrack = musicSelect.value;
+      if (selectedTrack !== 'none' && audioTracks[selectedTrack]) {
+        bgAudio.src = audioTracks[selectedTrack];
+        const playPromise = bgAudio.play();
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
+            document.getElementById('musicToggleBtn').classList.remove('hidden');
+            document.getElementById('audioConsentBanner').classList.add('hidden');
+          }).catch(() => {
+            // Auto-play blocked by browser policies
+            document.getElementById('audioConsentBanner').classList.remove('hidden');
+          });
+        }
+      } else {
+        bgAudio.pause();
+        document.getElementById('musicToggleBtn').classList.add('hidden');
+        document.getElementById('audioConsentBanner').classList.add('hidden');
+      }
+    }
+
+    musicSelect.addEventListener('change', playSelectedAudio);
+
+    // Audio Enable Click Target for Browsers
+    document.getElementById('enableAudioBtn').addEventListener('click', () => {
+      bgAudio.play();
+      document.getElementById('audioConsentBanner').classList.add('hidden');
+      document.getElementById('musicToggleBtn').classList.remove('hidden');
+    });
+
+    // Music Toggle Button inside Header
+    const musicToggleBtn = document.getElementById('musicToggleBtn');
+    musicToggleBtn.addEventListener('click', () => {
+      if (bgAudio.paused) {
+        bgAudio.play();
+        document.getElementById('musicIcon').className = 'fa-solid fa-volume-high';
+        document.getElementById('musicStatusText').textContent = 'Playing';
+      } else {
+        bgAudio.pause();
+        document.getElementById('musicIcon').className = 'fa-solid fa-volume-xmark';
+        document.getElementById('musicStatusText').textContent = 'Muted';
+      }
+    });
+
+    // Handle Multiple Photo Uploads
+    photoUploadInput.addEventListener('change', (e) => {
+      const files = Array.from(e.target.files);
+      let loadedCount = 0;
+
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(uploadEvent) {
+          uploadedPhotoArray.push(uploadEvent.target.result);
+          loadedCount++;
+          if (loadedCount === files.length) {
+            renderThumbnails();
+            renderGallery();
+            updatePreview();
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    // Close Lightbox Modal
+    closeLightboxBtn.addEventListener('click', () => lightboxModal.classList.add('hidden'));
+    lightboxModal.addEventListener('click', (e) => {
+      if (e.target === lightboxModal) lightboxModal.classList.add('hidden');
+    });
+
+    langSelect.addEventListener('change', updateLanguage);
+
+    [groomInput, brideInput, dateInput, timeInput, venueInput, mapUrlInput, rsvpEmailInput, storyInput].forEach(input => {
+      input.addEventListener('input', updatePreview);
+    });
+
+    // RSVP Submission
+    document.getElementById('guestRsvpForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const guestName = document.getElementById('guestName').value;
+      const attendance = document.getElementById('guestAttendance').value;
+      const count = document.getElementById('guestCount').value;
+      const targetEmail = rsvpEmailInput.value.trim();
+
+      if (!targetEmail) {
+        alert("The couple has not configured an RSVP notification email yet.");
+        return;
+      }
+
+      const subject = encodeURIComponent(`RSVP: ${guestName} - ${attendance}`);
+      const body = encodeURIComponent(`Hello,\n\nYou have received a new RSVP response for the wedding of ${groomInput.value} & ${brideInput.value}:\n\nGuest Name: ${guestName}\nStatus: ${attendance}\nNumber of Guests: ${count}\n\nSent via Digital Wedding Invitation.`);
+      
+      window.location.href = `mailto:${targetEmail}?subject=${subject}&body=${body}`;
+    });
+
+    // Load from URL Query Parameters
+    function loadFromUrlParams() {
+      const urlParams = new URLSearchParams(window.location.search);
+      
+      if (urlParams.toString().length > 0) {
+        document.getElementById('editorPanel').classList.add('hidden');
+        document.getElementById('previewSection').className = "col-span-12 flex flex-col items-center justify-center space-y-6";
+
+        if (urlParams.has('g') && urlParams.has('b')) {
+          document.getElementById('headerSubtitle').textContent = `${urlParams.get('g')} & ${urlParams.get('b')}'s Wedding`;
+        }
+      }
+
+      if (urlParams.has('lang')) {
+        langSelect.value = urlParams.get('lang');
+      }
+      if (urlParams.has('g')) groomInput.value = urlParams.get('g');
+      if (urlParams.has('b')) brideInput.value = urlParams.get('b');
+      if (urlParams.has('d')) dateInput.value = urlParams.get('d');
+      if (urlParams.has('t')) timeInput.value = urlParams.get('t');
+      if (urlParams.has('v')) venueInput.value = urlParams.get('v');
+      if (urlParams.has('m')) mapUrlInput.value = urlParams.get('m');
+      if (urlParams.has('e')) rsvpEmailInput.value = urlParams.get('e');
+      if (urlParams.has('s')) storyInput.value = urlParams.get('s');
+      if (urlParams.has('anim')) animSelect.value = urlParams.get('anim');
+      if (urlParams.has('music')) {
+        musicSelect.value = urlParams.get('music');
+        setTimeout(playSelectedAudio, 1000);
+      }
+      if (urlParams.has('photos')) {
+        try {
+          uploadedPhotoArray = JSON.parse(decodeURIComponent(urlParams.get('photos')));
+          renderGallery();
+        } catch(e) {}
+      }
+      if (urlParams.has('theme')) {
+        themeSelect.value = urlParams.get('theme');
+        themeSelect.dispatchEvent(new Event('change'));
+      }
+
+      updateLanguage();
+      updatePreview();
+    }
+
+    // Shareable Recipient Link
+    shareBtn.addEventListener('click', () => {
+      const params = new URLSearchParams({
+        lang: langSelect.value,
+        g: groomInput.value,
+        b: brideInput.value,
+        d: dateInput.value,
+        t: timeInput.value,
+        v: venueInput.value,
+        m: mapUrlInput.value,
+        e: rsvpEmailInput.value,
+        s: storyInput.value,
+        theme: themeSelect.value,
+        anim: animSelect.value,
+        music: musicSelect.value
+      });
+
+      if (uploadedPhotoArray.length > 0) {
+        params.set('photos', JSON.stringify(uploadedPhotoArray));
+      }
+
+      const shareableUrl = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+      
+      navigator.clipboard.writeText(shareableUrl).then(() => {
+        alert("✨ Shareable recipient invitation URL copied to clipboard!\n\nWhen guests open this link, they will see ONLY the invitation card, photo gallery, and RSVP form.");
+      }).catch(err => {
+        console.error("Clipboard Error: ", err);
+      });
+    });
+
+    // PNG Image Download
+    downloadBtn.addEventListener('click', () => {
+      downloadBtn.disabled = true;
+      downloadBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Rendering...`;
+
+      html2canvas(document.getElementById('cardContainer'), {
+        scale: 3,
+        backgroundColor: null,
+        useCORS: true
+      }).then(canvas => {
+        const image = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = `${groomInput.value}_and_${brideInput.value}_wedding_invitation.png`;
+        link.href = image;
+        link.click();
+
+        downloadBtn.disabled = false;
+        downloadBtn.innerHTML = `<i class="fa-solid fa-file-arrow-down"></i> Download PNG`;
+      }).catch(err => {
+        console.error("Canvas render error:", err);
+        alert("Could not generate image download.");
+        downloadBtn.disabled = false;
+        downloadBtn.innerHTML = `<i class="fa-solid fa-file-arrow-down"></i> Download PNG`;
+      });
+    });
+
+    // AI Writer Integration
+    aiBtn.addEventListener('click', async () => {
+      const apiKey = document.getElementById('apiKey').value.trim();
+      if (!apiKey) {
+        alert("Please paste your Gemini API Key first!");
+        return;
+      }
+
+      aiBtn.disabled = true;
+      aiBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Writing...`;
+
+      try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{
+              parts: [{ text: `Write a short 2-line romantic invitation quote for ${groomInput.value} and ${brideInput.value}'s wedding in ${langSelect.value} language. Maximum 20 words.` }]
+            }]
+          })
+        });
+
+        const data = await response.json();
+        const aiText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (aiText) {
+          storyInput.value = aiText.trim();
+          updatePreview();
+        }
+      } catch (err) {
+        alert("Error connecting to Gemini API.");
+      } finally {
+        aiBtn.disabled = false;
+        aiBtn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> AI Write`;
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', loadFromUrlParams);
+  </script>
+</body>
+</html>
