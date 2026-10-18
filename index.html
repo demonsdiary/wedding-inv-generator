@@ -3,27 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Digital Wedding Invitation Generator</title>
+  <title>Digital Wedding Invitation Platform</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- html2canvas for Image Download -->
+  <!-- html2canvas for PNG Export -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Great+Vibes&family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Noto+Sans+JP:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Great+Vibes&family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Alex+Brush&display=swap" rel="stylesheet">
 
   <style>
     .font-script { font-family: 'Great Vibes', cursive; }
     .font-serif-title { font-family: 'Cinzel', serif; }
     .font-classic { font-family: 'Playfair Display', serif; }
-    .font-sans-body { font-family: 'Montserrat', 'Noto Sans JP', sans-serif; }
+    .font-sans-body { font-family: 'Montserrat', sans-serif; }
 
-    /* Theme Styles */
+    /* Keyframe Animations */
+    @keyframes pulseSoft {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+    @keyframes floatSoft {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+    @keyframes slideInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes rotateGlow {
+      0% { filter: drop-shadow(0 0 5px rgba(255,215,0,0.3)); }
+      50% { filter: drop-shadow(0 0 20px rgba(255,215,0,0.8)); }
+      100% { filter: drop-shadow(0 0 5px rgba(255,215,0,0.3)); }
+    }
+
+    .anim-pulse { animation: pulseSoft 4s infinite ease-in-out; }
+    .anim-float { animation: floatSoft 5s infinite ease-in-out; }
+    .anim-fade { animation: slideInUp 1s ease-out forwards; }
+    .anim-glow { animation: rotateGlow 3s infinite ease-in-out; }
+
+    /* 10 Theme Styles */
     .theme-floral {
       background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
       border: 8px double #f6ad55;
@@ -66,200 +90,205 @@
     .theme-sage .accent-text { color: #15803d; }
     .theme-sage .badge-btn { background-color: #15803d; color: #ffffff; }
 
-    /* Custom Animation Options */
-    @keyframes fadeRise {
-      0% { opacity: 0; transform: translateY(24px); }
-      100% { opacity: 1; transform: translateY(0); }
+    .theme-sunset {
+      background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+      border: 8px double #fb923c;
+      color: #7c2d12;
     }
-    .anim-fade-rise { animation: fadeRise 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .theme-sunset .accent-text { color: #c2410c; }
+    .theme-sunset .badge-btn { background-color: #c2410c; color: #ffffff; }
 
-    @keyframes gentlePulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.03); }
+    .theme-ocean {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      border: 8px double #38bdf8;
+      color: #0c4a6e;
     }
-    .anim-pulse { animation: gentlePulse 3.5s ease-in-out infinite; }
+    .theme-ocean .accent-text { color: #0284c7; }
+    .theme-ocean .badge-btn { background-color: #0284c7; color: #ffffff; }
 
-    @keyframes zoomIn {
-      0% { opacity: 0; transform: scale(0.92); }
-      100% { opacity: 1; transform: scale(1); }
+    .theme-lavender {
+      background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+      border: 8px double #c084fc;
+      color: #581c87;
     }
-    .anim-zoom-in { animation: zoomIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .theme-lavender .accent-text { color: #7e22ce; }
+    .theme-lavender .badge-btn { background-color: #7e22ce; color: #ffffff; }
 
-    @keyframes shimmerGlow {
-      0% { box-shadow: 0 10px 25px -5px rgba(244, 63, 94, 0.2); }
-      50% { box-shadow: 0 20px 35px 0px rgba(251, 191, 36, 0.4); }
-      100% { box-shadow: 0 10px 25px -5px rgba(244, 63, 94, 0.2); }
+    .theme-gothic {
+      background: #18181b;
+      border: 6px double #e4e4e7;
+      color: #f4f4f5;
     }
-    .anim-shimmer { animation: shimmerGlow 3s ease-in-out infinite; }
+    .theme-gothic .accent-text { color: #e4e4e7; }
+    .theme-gothic .badge-btn { background-color: #e4e4e7; color: #18181b; }
 
-    @keyframes petalSpin {
-      0% { transform: rotate(0deg) scale(0.95); opacity: 0.9; }
-      50% { transform: rotate(180deg) scale(1.02); opacity: 1; }
-      100% { transform: rotate(360deg) scale(0.95); opacity: 0.9; }
+    .theme-burgundy {
+      background: #450a0a;
+      border: 8px solid #f59e0b;
+      color: #fef2f2;
     }
-    .anim-petal-spin { animation: petalSpin 20s linear infinite; }
-
-    @keyframes slideUp {
-      0% { opacity: 0; transform: translateY(40px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-    .anim-slide-up { animation: slideUp 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
-
-    /* Floating Music Notes Animation */
-    @keyframes floatNote {
-      0% { opacity: 0; transform: translateY(0) scale(0.6) rotate(0deg); }
-      50% { opacity: 1; }
-      100% { opacity: 0; transform: translateY(-40px) scale(1.1) rotate(15deg); }
-    }
-    .music-note-float {
-      position: absolute;
-      animation: floatNote 2s ease-out infinite;
-      pointer-events: none;
-    }
+    .theme-burgundy .accent-text { color: #fde047; }
+    .theme-burgundy .secondary-text { color: #fca5a5; }
+    .theme-burgundy .badge-btn { background-color: #f59e0b; color: #450a0a; }
   </style>
 </head>
 <body class="bg-slate-100 font-sans-body text-slate-800 min-h-screen flex flex-col justify-between">
 
-  <!-- Autoplay Audio Banner / Overlay Prompt -->
-  <div id="autoplayBanner" class="hidden fixed top-0 left-0 right-0 z-50 bg-rose-600 text-white p-3 text-xs font-semibold text-center flex items-center justify-center gap-3 shadow-lg">
-    <span><i class="fa-solid fa-music animate-bounce"></i> <span id="lblAutoplayPrompt">Tap anywhere or click play to enable background music</span></span>
-    <button type="button" onclick="forcePlayMusic()" class="bg-white text-rose-700 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider hover:bg-rose-50 transition">
-      <i class="fa-solid fa-play mr-1"></i> <span id="lblEnableAudioBtn">Play Music</span>
+  <!-- Audio Player element -->
+  <audio id="bgAudio" loop preload="auto"></audio>
+
+  <!-- Audio Consent Banner for strict browsers -->
+  <div id="audioConsentBanner" class="fixed top-0 left-0 right-0 bg-slate-900/95 text-white py-3 px-4 z-50 flex items-center justify-between text-xs shadow-lg hidden">
+    <div class="flex items-center gap-2">
+      <i class="fa-solid fa-music text-rose-400 animate-pulse"></i>
+      <span>Tap anywhere or click "Enable Music" to start wedding background audio.</span>
+    </div>
+    <button id="enableAudioBtn" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-lg font-medium transition">
+      Enable Music
     </button>
   </div>
 
   <!-- Header -->
-  <header class="bg-slate-900 text-white py-4 shadow-md text-center relative">
-    <h1 class="text-2xl font-bold font-serif-title tracking-widest" id="mainHeaderTitle">WEDDING INVITATION</h1>
-    <p id="headerSubtitle" class="text-[11px] uppercase tracking-widest text-slate-400 mt-0.5">Digital Celebration Platform</p>
+  <header class="bg-slate-900 text-white py-4 shadow-md text-center relative z-10">
+    <h1 class="text-2xl font-bold font-serif-title tracking-widest" id="headerTitle">WEDDING INVITATION</h1>
+    <p id="headerSubtitle" class="text-[11px] uppercase tracking-widest text-slate-400 mt-0.5">Digital Celebration</p>
+    
+    <!-- Audio Control Badge -->
+    <button id="musicToggleBtn" class="hidden absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white p-2 rounded-full text-xs transition items-center gap-2 px-3">
+      <i id="musicIcon" class="fa-solid fa-volume-high"></i>
+      <span id="musicStatusText" class="hidden sm:inline text-[10px]">Playing</span>
+    </button>
   </header>
 
-  <!-- MAIN CONTAINER (Layout shifts automatically in Recipient Mode) -->
+  <!-- Navigation Tabs (Invitation Card vs Photo Gallery Page) -->
+  <div class="max-w-md mx-auto mt-4 px-4 flex justify-center gap-3 z-10">
+    <button id="tabCardBtn" class="flex-1 bg-slate-900 text-white py-2 px-4 rounded-xl text-xs font-semibold shadow transition flex items-center justify-center gap-2">
+      <i class="fa-solid fa-heart"></i> <span id="tabCardLabel">Invitation Card</span>
+    </button>
+    <button id="tabGalleryBtn" class="flex-1 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 py-2 px-4 rounded-xl text-xs font-semibold shadow-sm transition flex items-center justify-center gap-2">
+      <i class="fa-solid fa-images"></i> <span id="tabGalleryLabel">Photo Gallery</span>
+    </button>
+  </div>
+
+  <!-- MAIN CONTAINER -->
   <main id="mainContainer" class="max-w-7xl mx-auto p-4 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start justify-center flex-1 w-full">
     
-    <!-- LEFT: EDITOR CONTROLS (Hidden for guests viewing a shared link) -->
-    <section id="editorPanel" class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4 max-h-[88vh] overflow-y-auto">
+    <!-- LEFT: EDITOR PANEL (Hidden for guests) -->
+    <section id="editorPanel" class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4 max-h-[85vh] overflow-y-auto">
       <h2 class="text-xl font-semibold text-slate-800 flex items-center gap-2">
-        <i class="fa-solid fa-sliders text-rose-500"></i> <span id="lblCustomizeDetails">Customize Details</span>
+        <i class="fa-solid fa-sliders text-rose-500"></i> Customize Details
       </h2>
 
       <form id="inviteForm" class="space-y-3">
-        <!-- Language Selection -->
-        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
-          <label class="block text-xs font-semibold uppercase text-slate-600 mb-1 flex items-center gap-1.5">
-            <i class="fa-solid fa-globe text-rose-500"></i> <span id="lblLanguage">Language / Bahasa</span>
-          </label>
-          <select id="languageSelect" class="w-full border rounded-lg p-2 text-xs focus:ring-2 focus:ring-rose-500 outline-none bg-white font-medium">
-            <option value="en">English (US)</option>
-            <option value="id">Bahasa Indonesia</option>
-            <option value="es">Español</option>
-            <option value="fr">Français</option>
-            <option value="de">Deutsch</option>
-            <option value="it">Italiano</option>
-            <option value="pt">Português</option>
-            <option value="tl">Tagalog (Filipino)</option>
-            <option value="ja">日本語 (Japanese)</option>
+        <!-- Language Selector -->
+        <div>
+          <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Language / Bahasa</label>
+          <select id="langSelect" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-rose-500 outline-none bg-slate-50">
+            <option value="en">🇺🇸 English</option>
+            <option value="es">🇪🇸 Español</option>
+            <option value="fr">🇫🇷 Français</option>
+            <option value="id">🇮🇩 Bahasa Indonesia</option>
           </select>
         </div>
 
-        <!-- Theme Selection -->
+        <!-- Theme Selector (10 Themes) -->
         <div>
-          <label class="block text-xs font-semibold uppercase text-slate-600 mb-1" id="lblSelectTheme">Select Theme Style</label>
+          <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Select Theme Style (10 Choices)</label>
           <select id="themeSelect" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-rose-500 outline-none bg-slate-50">
             <option value="theme-floral">🌸 Floral Elegance</option>
             <option value="theme-gold">✨ Golden Vintage</option>
             <option value="theme-minimal">🤍 Modern Minimalist</option>
             <option value="theme-dark">🌙 Dark Luxury</option>
             <option value="theme-sage">🌿 Botanical Sage</option>
+            <option value="theme-sunset">🌅 Sunset Romance</option>
+            <option value="theme-ocean">🌊 Ocean Breeze</option>
+            <option value="theme-lavender">💜 Royal Lavender</option>
+            <option value="theme-gothic">🖤 Gothic Velvet</option>
+            <option value="theme-burgundy">🍇 Burgundy Romance</option>
           </select>
         </div>
 
         <!-- Animation Options -->
         <div>
-          <label class="block text-xs font-semibold uppercase text-slate-600 mb-1" id="lblCardAnimation">Card Entry Animation</label>
+          <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Card Entrance Animation</label>
           <select id="animSelect" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-rose-500 outline-none bg-slate-50">
-            <option value="none">None (Static)</option>
-            <option value="anim-fade-rise" selected>Soft Fade & Rise</option>
-            <option value="anim-pulse">Romantic Heartbeat Pulse</option>
-            <option value="anim-zoom-in">Elegant Zoom-In</option>
-            <option value="anim-shimmer">Soft Floating Glow</option>
-            <option value="anim-slide-up">Elegant Slide Up</option>
-            <option value="anim-petal-spin">Floral Petal Spin</option>
+            <option value="anim-fade">✨ Smooth Fade & Rise</option>
+            <option value="anim-pulse">💓 Heartbeat Gentle Pulse</option>
+            <option value="anim-float">🎈 Floating Magic</option>
+            <option value="anim-glow">🌟 Golden Glow Aura</option>
+            <option value="none">🚫 No Animation</option>
           </select>
         </div>
 
-        <!-- Music Selection -->
-        <div class="p-3 bg-rose-50/60 rounded-xl border border-rose-100 space-y-2">
-          <label class="block text-xs font-semibold uppercase text-rose-800 flex items-center gap-1.5">
-            <i class="fa-solid fa-music"></i> <span id="lblBgMusic">Background Music</span>
-          </label>
-          <select id="musicPresetSelect" class="w-full border rounded-lg p-2 text-xs focus:ring-2 focus:ring-rose-500 outline-none bg-white">
-            <option value="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a731d1.mp3">Romantic Piano</option>
-            <option value="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3">Acoustic Love Guitar</option>
-            <option value="https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3">Violin Romance / Strings</option>
-            <option value="https://cdn.pixabay.com/download/audio/2022/10/25/audio_823126be1e.mp3">Upbeat Acoustic Love</option>
-            <option value="https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe92c21.mp3">Classical Strings</option>
-            <option value="custom">Custom Music URL (MP3)...</option>
+        <!-- Background Music Selector -->
+        <div>
+          <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Background Music Track</label>
+          <select id="musicSelect" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-rose-500 outline-none bg-slate-50">
+            <option value="none">🚫 No Music</option>
+            <option value="romantic">🎻 Classical Romantic Strings</option>
+            <option value="acoustic">🎸 Soft Acoustic Romance</option>
+            <option value="piano">🎹 Peaceful Piano Melody</option>
           </select>
-
-          <input type="url" id="customMusicUrl" placeholder="Paste direct .mp3 file URL here..." class="w-full border rounded-lg p-2 text-xs focus:ring-2 focus:ring-rose-500 outline-none hidden bg-white">
         </div>
 
-        <!-- Couple Details -->
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-semibold uppercase text-slate-600 mb-1" id="lblGroomName">Groom's Name</label>
+            <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Groom's Name</label>
             <input type="text" id="groom" value="Alexander" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-rose-500 outline-none">
           </div>
           <div>
-            <label class="block text-xs font-semibold uppercase text-slate-600 mb-1" id="lblBrideName">Bride's Name</label>
+            <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Bride's Name</label>
             <input type="text" id="bride" value="Sophia" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-rose-500 outline-none">
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-semibold uppercase text-slate-600 mb-1" id="lblEventDate">Date</label>
+            <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Date</label>
             <input type="date" id="eventDate" value="2027-06-18" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-rose-500 outline-none">
           </div>
           <div>
-            <label class="block text-xs font-semibold uppercase text-slate-600 mb-1" id="lblEventTime">Time</label>
+            <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Time</label>
             <input type="text" id="eventTime" value="4:00 PM" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-rose-500 outline-none">
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-semibold uppercase text-slate-600 mb-1" id="lblVenueAddress">Venue & Address</label>
+          <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Venue & Address</label>
           <input type="text" id="venue" value="Grand Ballroom, The St. Regis Hotel" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-rose-500 outline-none">
         </div>
 
         <div>
-          <label class="block text-xs font-semibold uppercase text-slate-600 mb-1" id="lblMapUrl">Map / Location URL (Google Maps)</label>
+          <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Map / Location URL</label>
           <input type="url" id="mapUrl" placeholder="https://maps.google.com/..." class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-rose-500 outline-none">
         </div>
 
         <div>
-          <label class="block text-xs font-semibold uppercase text-slate-600 mb-1" id="lblRsvpEmail">RSVP Notification Email</label>
+          <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">RSVP Destination Email</label>
           <input type="email" id="rsvpEmail" placeholder="couple@example.com" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-rose-500 outline-none">
-          <p class="text-[11px] text-slate-400 mt-0.5" id="lblRsvpEmailHelp">Guest responses will be sent directly to this address.</p>
+        </div>
+
+        <!-- MULTIPLE PHOTO UPLOAD MANAGER -->
+        <div>
+          <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Upload Multiple Couple Photos</label>
+          <input type="file" id="photoUpload" accept="image/*" multiple class="w-full border rounded-lg p-2 text-xs file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100">
+          <p class="text-[11px] text-slate-400 mt-1">First photo acts as card main avatar. Additional photos populate the Photo Gallery tab!</p>
+          
+          <!-- Uploaded Thumbnails Manager -->
+          <div id="thumbnailList" class="flex flex-wrap gap-2 mt-2"></div>
         </div>
 
         <div>
-          <label class="block text-xs font-semibold uppercase text-slate-600 mb-1" id="lblUploadPhoto">Upload Couple Photo</label>
-          <input type="file" id="photoUpload" accept="image/*" class="w-full border rounded-lg p-2 text-xs file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100">
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold uppercase text-slate-600 mb-1" id="lblCustomPoem">Custom Poem or Romantic Quote</label>
+          <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Custom Poem or AI Quote</label>
           <textarea id="storyText" rows="2" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-rose-500 outline-none">"Two lives, two hearts, joined together in friendship, united forever in love."</textarea>
         </div>
 
         <div>
-          <label class="block text-xs font-semibold uppercase text-slate-600 mb-1" id="lblApiKey">Gemini API Key (Optional AI Writer)</label>
+          <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Gemini API Key (Optional AI Writer)</label>
           <div class="flex gap-2">
             <input type="password" id="apiKey" placeholder="Paste API Key" class="flex-1 border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-rose-500 outline-none">
             <button type="button" id="aiBtn" class="bg-rose-600 hover:bg-rose-700 text-white px-4 rounded-lg text-xs font-medium transition flex items-center gap-1">
-              <i class="fa-solid fa-wand-magic-sparkles"></i> <span id="lblAiWrite">AI Write</span>
+              <i class="fa-solid fa-wand-magic-sparkles"></i> AI Write
             </button>
           </div>
         </div>
@@ -267,467 +296,214 @@
         <!-- Action Buttons -->
         <div class="pt-2 grid grid-cols-2 gap-3">
           <button type="button" id="shareBtn" class="bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1.5 shadow">
-            <i class="fa-solid fa-link"></i> <span id="lblCopyLink">Copy Link</span>
+            <i class="fa-solid fa-link"></i> Copy Link
           </button>
           
           <button type="button" id="downloadBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1.5 shadow">
-            <i class="fa-solid fa-file-arrow-down"></i> <span id="lblDownloadPng">Download PNG</span>
+            <i class="fa-solid fa-file-arrow-down"></i> Download PNG
           </button>
         </div>
       </form>
     </section>
 
-    <!-- RIGHT: INVITATION CARD PREVIEW & RSVP -->
+    <!-- RIGHT: PREVIEW SECTION (INCLUDES CARD PAGE & GALLERY PAGE) -->
     <section id="previewSection" class="lg:col-span-12 flex flex-col items-center justify-center space-y-6 w-full">
       
-      <!-- Audio Element -->
-      <audio id="bgMusicPlayer" loop preload="auto"></audio>
+      <!-- PAGE 1: INVITATION CARD -->
+      <div id="cardPage" class="flex flex-col items-center justify-center space-y-6 w-full">
+        <!-- Card Container for html2canvas -->
+        <div id="cardContainer" class="p-2 bg-transparent">
+          <div id="cardTemplate" class="theme-floral anim-fade w-[380px] sm:w-[420px] rounded-3xl p-6 sm:p-8 shadow-2xl text-center relative overflow-hidden transition-all duration-300 flex flex-col justify-between">
+            
+            <div>
+              <div class="text-2xl mb-1 opacity-75">❦</div>
+              <p id="cardTogetherText" class="text-[11px] uppercase tracking-[0.2em] font-semibold opacity-80">Together with their families</p>
+              
+              <!-- Custom Primary Photo Frame Preview -->
+              <div id="photoPreviewContainer" class="my-3 hidden flex justify-center">
+                <img id="previewImg" src="" alt="Couple Photo" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md">
+              </div>
 
-      <!-- Card Container -->
-      <div id="cardContainer" class="p-2 bg-transparent relative">
-        
-        <!-- Music Control Widget overlay on card -->
-        <div id="musicWidget" class="absolute top-6 right-6 z-20">
-          <button type="button" id="musicToggleBtn" title="Play/Pause Background Music" class="w-10 h-10 rounded-full bg-white/90 shadow-md backdrop-blur-sm border border-slate-200 flex items-center justify-center text-rose-600 hover:scale-105 active:scale-95 transition">
-            <i id="musicIcon" class="fa-solid fa-music"></i>
-          </button>
-          <div id="noteAnimContainer" class="relative w-full h-0"></div>
+              <h3 class="text-3xl sm:text-4xl font-script accent-text my-3 leading-tight" id="previewNames">
+                Alexander <br><span class="text-xl font-sans-body font-light">&</span><br> Sophia
+              </h3>
+
+              <p class="text-xs italic px-4 my-2 leading-relaxed secondary-text" id="previewStory">
+                "Two lives, two hearts, joined together in friendship, united forever in love."
+              </p>
+            </div>
+
+            <div>
+              <div class="my-3 border-y border-current/20 py-2.5">
+                <p class="text-xs font-semibold uppercase tracking-widest accent-text" id="previewDate">Friday, June 18, 2027</p>
+                <p class="text-[11px] opacity-75 mt-0.5" id="previewTime">At 4:00 PM</p>
+              </div>
+
+              <p class="text-xs font-medium px-2" id="previewVenue">Grand Ballroom, The St. Regis Hotel</p>
+              
+              <!-- Map Link Button -->
+              <div id="mapLinkContainer" class="mt-3 hidden">
+                <a id="previewMapLink" href="#" target="_blank" class="inline-flex items-center gap-1 text-[11px] font-semibold underline tracking-wide opacity-90 hover:opacity-100">
+                  <i class="fa-solid fa-map-location-dot"></i> <span id="viewMapText">View Venue Map</span>
+                </a>
+              </div>
+
+              <div class="mt-4">
+                <button type="button" onclick="scrollToRsvp()" class="badge-btn inline-block text-[10px] font-semibold px-6 py-2 rounded-full uppercase tracking-[0.2em] shadow-sm">
+                  <span id="cardRsvpBtnText">RSVP NOW</span>
+                </button>
+              </div>
+              <div class="text-xl mt-2 opacity-75">❦</div>
+            </div>
+
+          </div>
         </div>
 
-        <div id="cardTemplate" class="theme-floral anim-fade-rise w-[380px] sm:w-[420px] rounded-3xl p-6 sm:p-8 shadow-2xl text-center relative overflow-hidden transition-all duration-300 flex flex-col justify-between">
-          
-          <div>
-            <div class="text-2xl mb-1 opacity-75">❦</div>
-            <p class="text-[11px] uppercase tracking-[0.2em] font-semibold opacity-80" id="previewTogetherText">Together with their families</p>
-            
-            <!-- Custom Photo Frame Preview -->
-            <div id="photoPreviewContainer" class="my-3 hidden flex justify-center">
-              <img id="previewImg" src="" alt="Couple Photo" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md">
+        <!-- Guest RSVP Box -->
+        <div id="rsvpSection" class="w-full max-w-[420px] bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+          <h3 id="rsvpHeading" class="text-sm font-bold uppercase tracking-wider text-slate-800 mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-envelope-open-text text-rose-500"></i> Guest RSVP Form
+          </h3>
+          <form id="guestRsvpForm" class="space-y-3 text-left">
+            <div>
+              <label id="labelFullName" class="block text-[11px] font-semibold uppercase text-slate-600 mb-1">Your Full Name</label>
+              <input type="text" id="guestName" placeholder="John Doe" class="w-full border rounded-lg p-2 text-xs focus:ring-2 focus:ring-rose-500 outline-none" required>
             </div>
-
-            <h3 class="text-3xl sm:text-4xl font-script accent-text my-3 leading-tight" id="previewNames">
-              Alexander <br><span class="text-xl font-sans-body font-light">&</span><br> Sophia
-            </h3>
-
-            <p class="text-[11px] uppercase tracking-wider font-semibold opacity-75 mb-2" id="previewPleasureText">Request the pleasure of your company</p>
-
-            <p class="text-xs italic px-4 my-2 leading-relaxed secondary-text" id="previewStory">
-              "Two lives, two hearts, joined together in friendship, united forever in love."
-            </p>
-          </div>
-
-          <div>
-            <div class="my-3 border-y border-current/20 py-2.5">
-              <p class="text-xs font-semibold uppercase tracking-widest accent-text" id="previewDate">Friday, June 18, 2027</p>
-              <p class="text-[11px] opacity-75 mt-0.5" id="previewTime">At 4:00 PM</p>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label id="labelAttending" class="block text-[11px] font-semibold uppercase text-slate-600 mb-1">Attending?</label>
+                <select id="guestAttendance" class="w-full border rounded-lg p-2 text-xs focus:ring-2 focus:ring-rose-500 outline-none">
+                  <option value="Joyfully Accepts">Joyfully Accepts</option>
+                  <option value="Regretfully Declines">Regretfully Declines</option>
+                </select>
+              </div>
+              <div>
+                <label id="labelGuestCount" class="block text-[11px] font-semibold uppercase text-slate-600 mb-1">Number of Guests</label>
+                <input type="number" id="guestCount" value="1" min="1" max="10" class="w-full border rounded-lg p-2 text-xs focus:ring-2 focus:ring-rose-500 outline-none">
+              </div>
             </div>
-
-            <p class="text-xs font-medium px-2" id="previewVenue">Grand Ballroom, The St. Regis Hotel</p>
-            
-            <!-- Map Link Button -->
-            <div id="mapLinkContainer" class="mt-3 hidden">
-              <a id="previewMapLink" href="#" target="_blank" class="inline-flex items-center gap-1 text-[11px] font-semibold underline tracking-wide opacity-90 hover:opacity-100">
-                <i class="fa-solid fa-map-location-dot"></i> <span id="lblViewVenueMap">View Venue Map</span>
-              </a>
-            </div>
-
-            <div class="mt-4">
-              <button type="button" onclick="scrollToRsvp()" class="badge-btn inline-block text-[10px] font-semibold px-6 py-2 rounded-full uppercase tracking-[0.2em] shadow-sm">
-                <span id="lblRsvpNowBtn">RSVP NOW</span>
-              </button>
-            </div>
-            <div class="text-xl mt-2 opacity-75">❦</div>
-          </div>
-
+            <button type="submit" id="submitRsvpBtn" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-2 rounded-lg text-xs font-semibold transition">
+              Submit RSVP
+            </button>
+          </form>
         </div>
       </div>
 
-      <!-- Guest RSVP Box -->
-      <div id="rsvpSection" class="w-full max-w-[420px] bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-        <h3 class="text-sm font-bold uppercase tracking-wider text-slate-800 mb-3 flex items-center gap-2">
-          <i class="fa-solid fa-envelope-open-text text-rose-500"></i> <span id="lblGuestRsvpHeader">Guest RSVP Form</span>
-        </h3>
-        <form id="guestRsvpForm" class="space-y-3 text-left">
-          <div>
-            <label class="block text-[11px] font-semibold uppercase text-slate-600 mb-1" id="lblYourFullName">Your Full Name</label>
-            <input type="text" id="guestName" placeholder="John Doe" class="w-full border rounded-lg p-2 text-xs focus:ring-2 focus:ring-rose-500 outline-none" required>
-          </div>
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <label class="block text-[11px] font-semibold uppercase text-slate-600 mb-1" id="lblAttending">Attending?</label>
-              <select id="guestAttendance" class="w-full border rounded-lg p-2 text-xs focus:ring-2 focus:ring-rose-500 outline-none">
-                <option value="Joyfully Accepts" id="optAccept">Joyfully Accepts</option>
-                <option value="Regretfully Declines" id="optDecline">Regretfully Declines</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-[11px] font-semibold uppercase text-slate-600 mb-1" id="lblGuestCount">Number of Guests</label>
-              <input type="number" id="guestCount" value="1" min="1" max="5" class="w-full border rounded-lg p-2 text-xs focus:ring-2 focus:ring-rose-500 outline-none">
-            </div>
-          </div>
-          <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-2 rounded-lg text-xs font-semibold transition">
-            <span id="lblSubmitRsvpBtn">Submit RSVP</span>
-          </button>
-        </form>
+      <!-- PAGE 2: DEDICATED PHOTO GALLERY PAGE -->
+      <div id="galleryPage" class="w-full max-w-4xl bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200 hidden">
+        <div class="text-center mb-6">
+          <h2 class="text-2xl font-bold font-serif-title text-slate-800" id="galleryHeading">Our Love Story Gallery</h2>
+          <p class="text-xs text-slate-500 mt-1" id="gallerySubheading">Moments & Memories</p>
+        </div>
+
+        <!-- Gallery Grid -->
+        <div id="galleryGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <!-- Dynamic Images will render here -->
+        </div>
+
+        <div id="emptyGalleryMsg" class="text-center py-12 text-slate-400 text-xs">
+          <i class="fa-regular fa-images text-3xl mb-2 block"></i>
+          <span>No photos uploaded yet. Upload images in the editor panel!</span>
+        </div>
       </div>
 
     </section>
 
   </main>
 
+  <!-- LIGHTBOX MODAL FOR GALLERY IMAGES -->
+  <div id="lightboxModal" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 hidden">
+    <button id="closeLightboxBtn" class="absolute top-4 right-4 text-white text-2xl p-2 hover:text-rose-400">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <img id="lightboxImg" src="" alt="Full View" class="max-w-full max-h-[90vh] rounded-lg shadow-2xl object-contain">
+  </div>
+
   <footer class="text-center py-4 text-xs text-slate-400">
     Digital Wedding Invitation Platform
   </footer>
 
   <script>
-    // --- TRANSLATION DICTIONARY ---
+    // Audio Tracks (Royalty Free MP3 Audio Data URLs)
+    const audioTracks = {
+      romantic: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=wedding-112185.mp3",
+      acoustic: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3?filename=soft-romantic-acoustic-10626.mp3",
+      piano: "https://cdn.pixabay.com/download/audio/2022/02/07/audio_012e690022.mp3?filename=romantic-piano-10022.mp3"
+    };
+
+    // Translations Dictionary
     const i18n = {
       en: {
-        headerTitle: "WEDDING INVITATION",
-        customizeDetails: "Customize Details",
-        language: "Language / Bahasa",
-        selectTheme: "Select Theme Style",
-        cardAnimation: "Card Entry Animation",
-        bgMusic: "Background Music",
-        groomName: "Groom's Name",
-        brideName: "Bride's Name",
-        eventDate: "Date",
-        eventTime: "Time",
-        atPrefix: "At",
-        venueAddress: "Venue & Address",
-        mapUrl: "Map / Location URL (Google Maps)",
-        rsvpEmail: "RSVP Notification Email",
-        rsvpEmailHelp: "Guest responses will be sent directly to this address.",
-        uploadPhoto: "Upload Couple Photo",
-        customPoem: "Custom Poem or Romantic Quote",
-        apiKey: "Gemini API Key (Optional AI Writer)",
-        aiWrite: "AI Write",
-        copyLink: "Copy Link",
-        downloadPng: "Download PNG",
-        togetherText: "Together with their families",
-        pleasureText: "Request the pleasure of your company",
-        viewVenueMap: "View Venue Map",
-        rsvpNow: "RSVP NOW",
-        guestRsvpHeader: "Guest RSVP Form",
-        yourFullName: "Your Full Name",
+        title: "WEDDING INVITATION",
+        subtitle: "Digital Celebration",
+        cardTab: "Invitation Card",
+        galleryTab: "Photo Gallery",
+        together: "Together with their families",
+        viewMap: "View Venue Map",
+        cardRsvpBtn: "RSVP NOW",
+        rsvpHeading: "Guest RSVP Form",
+        fullName: "Your Full Name",
         attending: "Attending?",
-        accept: "Joyfully Accepts",
-        decline: "Regretfully Declines",
         guestCount: "Number of Guests",
         submitRsvp: "Submit RSVP",
-        autoplayPrompt: "Tap anywhere or click play to enable background music",
-        enableAudioBtn: "Play Music",
-        aiPrompt: "Write a short 2-line romantic wedding invitation quote for "
-      },
-      id: {
-        headerTitle: "UNDANGAN PERNIKAHAN",
-        customizeDetails: "Sesuaikan Detail",
-        language: "Bahasa / Language",
-        selectTheme: "Pilih Gaya Tema",
-        cardAnimation: "Animasi Kartu",
-        bgMusic: "Musik Latar",
-        groomName: "Nama Mempelai Pria",
-        brideName: "Nama Mempelai Wanita",
-        eventDate: "Tanggal",
-        eventTime: "Waktu / Jam",
-        atPrefix: "Pukul",
-        venueAddress: "Lokasi & Alamat",
-        mapUrl: "Tautan Peta (Google Maps)",
-        rsvpEmail: "Email Notifikasi RSVP",
-        rsvpEmailHelp: "Balasan konfirmasi tamu akan dikirim langsung ke email ini.",
-        uploadPhoto: "Unggah Foto Pasangan",
-        customPoem: "Puisi / Kata Mutiara Romantis",
-        apiKey: "Kunci API Gemini (Penulis AI)",
-        aiWrite: "Tulis AI",
-        copyLink: "Salin Tautan",
-        downloadPng: "Unduh Gambar PNG",
-        togetherText: "Bersama keluarga besar kami",
-        pleasureText: "Mengundang Bapak/Ibu/Saudara/i untuk hadir",
-        viewVenueMap: "Lihat Peta Lokasi",
-        rsvpNow: "KONFIRMASI RSVP",
-        guestRsvpHeader: "Formulir Konfirmasi Tamu (RSVP)",
-        yourFullName: "Nama Lengkap Anda",
-        attending: "Kehadiran",
-        accept: "Hadir Dengan Suka Cita",
-        decline: "Mohon Maaf Tidak Bisa Hadir",
-        guestCount: "Jumlah Tamu",
-        submitRsvp: "Kirim Konfirmasi",
-        autoplayPrompt: "Ketuk layar atau tekan putar untuk mengaktifkan musik latar",
-        enableAudioBtn: "Putar Musik",
-        aiPrompt: "Tuliskan puisi singkat 2 baris kata mutiara pernikahan romantis untuk "
+        galleryTitle: "Our Love Story Gallery",
+        gallerySub: "Moments & Memories"
       },
       es: {
-        headerTitle: "INVITACIÓN DE BODA",
-        customizeDetails: "Personalizar Detalles",
-        language: "Idioma / Language",
-        selectTheme: "Estilo de Tema",
-        cardAnimation: "Animación de Entrada",
-        bgMusic: "Música de Fondo",
-        groomName: "Nombre del Novio",
-        brideName: "Nombre de la Novia",
-        eventDate: "Fecha",
-        eventTime: "Hora",
-        atPrefix: "A las",
-        venueAddress: "Lugar y Dirección",
-        mapUrl: "Enlace del Mapa (Google Maps)",
-        rsvpEmail: "Correo de Notificación RSVP",
-        rsvpEmailHelp: "Las respuestas de los invitados se enviarán a esta dirección.",
-        uploadPhoto: "Subir Foto de la Pareja",
-        customPoem: "Poema o Frase Romántica",
-        apiKey: "Clave API Gemini (Escritor AI)",
-        aiWrite: "Crear con AI",
-        copyLink: "Copiar Enlace",
-        downloadPng: "Descargar PNG",
-        togetherText: "Junto con sus familias",
-        pleasureText: "Tienen el honor de invitarle a su boda",
-        viewVenueMap: "Ver Mapa del Lugar",
-        rsvpNow: "CONFIRMAR ASISTENCIA",
-        guestRsvpHeader: "Formulario de Confirmación (RSVP)",
-        yourFullName: "Nombre Completo",
+        title: "INVITACIÓN DE BODA",
+        subtitle: "Celebración Digital",
+        cardTab: "Tarjeta de Invitación",
+        galleryTab: "Galería de Fotos",
+        together: "Junto con sus familias",
+        viewMap: "Ver Mapa del Lugar",
+        cardRsvpBtn: "CONFIRMAR ASISTENCIA",
+        rsvpHeading: "Formulario de Confirmación",
+        fullName: "Nombre Completo",
         attending: "¿Asistirá?",
-        accept: "Acepta con alegría",
-        decline: "Declina con pesar",
-        guestCount: "Número de Invitados",
-        submitRsvp: "Enviar RSVP",
-        autoplayPrompt: "Toca la pantalla para activar la música de fondo",
-        enableAudioBtn: "Reproducir Música",
-        aiPrompt: "Escribe un breve poema de boda romántico de 2 líneas para "
+        guestCount: "Número de Acompañantes",
+        submitRsvp: "Enviar Confirmación",
+        galleryTitle: "Nuestra Historia de Amor",
+        gallerySub: "Momentos y Recuerdos"
       },
       fr: {
-        headerTitle: "FAIRE-PART DE MARIAGE",
-        customizeDetails: "Personnaliser les Détails",
-        language: "Langue / Language",
-        selectTheme: "Style de Thème",
-        cardAnimation: "Animation de la Carte",
-        bgMusic: "Musique de Fond",
-        groomName: "Nom du Marié",
-        brideName: "Nom de la Mariée",
-        eventDate: "Date",
-        eventTime: "Heure",
-        atPrefix: "À",
-        venueAddress: "Lieu & Adresse",
-        mapUrl: "Lien de la Carte (Google Maps)",
-        rsvpEmail: "E-mail de Notification RSVP",
-        rsvpEmailHelp: "Les réponses des invités seront envoyées à cette adresse.",
-        uploadPhoto: "Télécharger la Photo",
-        customPoem: "Poème ou Citation Romantique",
-        apiKey: "Clé API Gemini (Auteur IA)",
-        aiWrite: "Rédiger avec IA",
-        copyLink: "Copier le Lien",
-        downloadPng: "Télécharger PNG",
-        togetherText: "Avec leurs familles",
-        pleasureText: "Ont le plaisir de vous inviter à leur mariage",
-        viewVenueMap: "Voir le Plan d'Accès",
-        rsvpNow: "RÉPONDRE (RSVP)",
-        guestRsvpHeader: "Formulaire de Réponse (RSVP)",
-        yourFullName: "Votre Nom Complet",
-        attending: "Présence",
-        accept: "Accepte avec joie",
-        decline: "Ne peut accepter",
+        title: "INVITATION DE MARIAGE",
+        subtitle: "Célébration Numérique",
+        cardTab: "Carte d'Invitation",
+        galleryTab: "Galerie Photos",
+        together: "Avec leurs familles",
+        viewMap: "Voir la Carte du Lieu",
+        cardRsvpBtn: "RÉPONDRE",
+        rsvpHeading: "Formulaire de Confirmation",
+        fullName: "Nom Complet",
+        attending: "Présence?",
         guestCount: "Nombre d'Invités",
         submitRsvp: "Envoyer la Réponse",
-        autoplayPrompt: "Appuyez pour activer la musique de fond",
-        enableAudioBtn: "Activer la Musique",
-        aiPrompt: "Écris un court poème de mariage romantique en 2 lignes pour "
+        galleryTitle: "Notre Histoire d'Amour",
+        gallerySub: "Moments & Souvenirs"
       },
-      de: {
-        headerTitle: "HOCHZEITSEINLADUNG",
-        customizeDetails: "Details Anpassen",
-        language: "Sprache / Language",
-        selectTheme: "Design wählen",
-        cardAnimation: "Kartenanimation",
-        bgMusic: "Hintergrundmusik",
-        groomName: "Name des Bräutigams",
-        brideName: "Name der Braut",
-        eventDate: "Datum",
-        eventTime: "Uhrzeit",
-        atPrefix: "Um",
-        venueAddress: "Ort & Adresse",
-        mapUrl: "Kartenlink (Google Maps)",
-        rsvpEmail: "RSVP-Benachrichtigungs-E-Mail",
-        rsvpEmailHelp: "Antworten der Gäste werden an diese E-Mail gesendet.",
-        uploadPhoto: "Foto des Paares hochladen",
-        customPoem: "Gedicht oder Romantischer Spruch",
-        apiKey: "Gemini API-Schlüssel (KI)",
-        aiWrite: "KI Schriben",
-        copyLink: "Link Kopieren",
-        downloadPng: "PNG Herunterladen",
-        togetherText: "Gemeinsam mit ihren Familien",
-        pleasureText: "Laden Sie herzlich zu ihrer Hochzeit ein",
-        viewVenueMap: "Anfahrt auf Karte anzeigen",
-        rsvpNow: "JETZT ZUSAGEN",
-        guestRsvpHeader: "Gäste-Rückmeldung (RSVP)",
-        yourFullName: "Ihr Vollständiger Name",
-        attending: "Teilnahme",
-        accept: "Nimmt freudig an",
-        decline: "Lohnt dankend ab",
-        guestCount: "Anzahl der Gäste",
-        submitRsvp: "Antwort Absenden",
-        autoplayPrompt: "Tippen Sie, um die Hintergrundmusik zu aktivieren",
-        enableAudioBtn: "Musik Starten",
-        aiPrompt: "Schreibe ein kurzes 2-zeiliges romantisches Hochzeitsgedicht für "
-      },
-      it: {
-        headerTitle: "PARTECIPAZIONE DI NOZZE",
-        customizeDetails: "Personalizza Dettagli",
-        language: "Lingua / Language",
-        selectTheme: "Stile Tema",
-        cardAnimation: "Animazione Carta",
-        bgMusic: "Musica di Sfondo",
-        groomName: "Nome dello Sposo",
-        brideName: "Nome della Sposa",
-        eventDate: "Data",
-        eventTime: "Ora",
-        atPrefix: "Alle ore",
-        venueAddress: "Luogo e Indirizzo",
-        mapUrl: "Mappa (Google Maps)",
-        rsvpEmail: "Email di Notifica RSVP",
-        rsvpEmailHelp: "Le risposte degli ospiti saranno inviate a questo indirizzo.",
-        uploadPhoto: "Carica Foto della Coppia",
-        customPoem: "Poesia o Citazione Romantica",
-        apiKey: "Chiave API Gemini (Scrittore IA)",
-        aiWrite: "Scrivi con IA",
-        copyLink: "Copia Link",
-        downloadPng: "Scarica PNG",
-        togetherText: "Insieme alle loro famiglie",
-        pleasureText: "Hanno il piacere di invitarvi al loro matrimonio",
-        viewVenueMap: "Vedi Mappa del Luogo",
-        rsvpNow: "CONFERMA RSVP",
-        guestRsvpHeader: "Modulo di Conferma (RSVP)",
-        yourFullName: "Nome e Cognome",
-        attending: "Partecipazione",
-        accept: "Accetta con gioia",
-        decline: "Rifiuta con rammarico",
-        guestCount: "Numero di Ospiti",
-        submitRsvp: "Invia Conferma",
-        autoplayPrompt: "Tocca per attivare la musica di sottofondo",
-        enableAudioBtn: "Avvia Musica",
-        aiPrompt: "Scrivi una breve poesia romantica di 2 righe per il matrimonio di "
-      },
-      pt: {
-        headerTitle: "CONVITE DE CASAMENTO",
-        customizeDetails: "Personalizar Detalhes",
-        language: "Idioma / Language",
-        selectTheme: "Estilo do Tema",
-        cardAnimation: "Animação de Entrada",
-        bgMusic: "Música de Fundo",
-        groomName: "Nome do Noivo",
-        brideName: "Nome da Noiva",
-        eventDate: "Data",
-        eventTime: "Horário",
-        atPrefix: "Às",
-        venueAddress: "Local e Endereço",
-        mapUrl: "Link do Mapa (Google Maps)",
-        rsvpEmail: "E-mail para Receber RSVP",
-        rsvpEmailHelp: "As respostas dos convidados serão enviadas para este e-mail.",
-        uploadPhoto: "Enviar Foto do Casal",
-        customPoem: "Poema ou Frase Romântica",
-        apiKey: "Chave API Gemini (Escritor IA)",
-        aiWrite: "Escrever com IA",
-        copyLink: "Copiar Link",
-        downloadPng: "Baixar PNG",
-        togetherText: "Juntamente com suas famílias",
-        pleasureText: "Convidam cordialmente para o seu casamento",
-        viewVenueMap: "Ver Mapa do Local",
-        rsvpNow: "CONFIRMAR PRESENÇA",
-        guestRsvpHeader: "Confirmação de Presença (RSVP)",
-        yourFullName: "Nome Completo",
-        attending: "Presença",
-        accept: "Aceita com alegria",
-        decline: "Declina com pesar",
-        guestCount: "Número de Convidados",
-        submitRsvp: "Enviar RSVP",
-        autoplayPrompt: "Toque na tela para ativar a música de fundo",
-        enableAudioBtn: "Tocar Música",
-        aiPrompt: "Escreva um curto poema romântico de casamento com 2 linhas para "
-      },
-      tl: {
-        headerTitle: "IMBITASYON SA KASAL",
-        customizeDetails: "I-customize ang Detalye",
-        language: "Wika / Language",
-        selectTheme: "Pumili ng Tema",
-        cardAnimation: "Animasyon ng Imbitasyon",
-        bgMusic: "Tugtog sa Background",
-        groomName: "Ngalan ng Nobyo",
-        brideName: "Ngalan ng Nobya",
-        eventDate: "Petsa",
-        eventTime: "Oras",
-        atPrefix: "Sa ganap na",
-        venueAddress: "Lugar at Tirahan",
-        mapUrl: "Link sa Mapa (Google Maps)",
-        rsvpEmail: "Email para sa RSVP",
-        rsvpEmailHelp: "Direktang ipadadala ang tugon ng bisita sa email na ito.",
-        uploadPhoto: "Mag-upload ng Larawan",
-        customPoem: "Maikling Tula o Mensahe ng Pag-ibig",
-        apiKey: "Gemini API Key (AI Writer)",
-        aiWrite: "AI Sumulat",
-        copyLink: "Kopyahin ang Link",
-        downloadPng: "I-download ang PNG",
-        togetherText: "Kasama ang aming mga pamilya",
-        pleasureText: "Inaanyayahan kayo sa aming kasal",
-        viewVenueMap: "Tingnan ang Mapa",
-        rsvpNow: "MAG-RSVP NA",
-        guestRsvpHeader: "Form sa Pag-RSVP ng Bisita",
-        yourFullName: "Buong Pangalan",
-        attending: "Makatalo o Makadalo?",
-        accept: "Masayang Dadalo",
-        decline: "Hindi Makakadalo",
-        guestCount: "Bilang ng Bisita",
-        submitRsvp: "Ipadala ang RSVP",
-        autoplayPrompt: "I-tap ang screen para patugtugin ang background music",
-        enableAudioBtn: "I-play ang Tugtog",
-        aiPrompt: "Magsulat ng maikling 2-linyang tulang pag-ibig para sa kasal nina "
-      },
-      ja: {
-        headerTitle: "結婚式のご案内",
-        customizeDetails: "詳細をカスタマイズ",
-        language: "言語 / Language",
-        selectTheme: "テーマスタイルを選択",
-        cardAnimation: "カードのアニメーション",
-        bgMusic: "BGM（背景音楽）",
-        groomName: "新郎のお名前",
-        brideName: "新婦のお名前",
-        eventDate: "開催日",
-        eventTime: "時間",
-        atPrefix: "開式",
-        venueAddress: "会場・住所",
-        mapUrl: "会場の地図URL (Google Maps)",
-        rsvpEmail: "出欠通知用メールアドレス",
-        rsvpEmailHelp: "ゲストの出欠回答がこのメールアドレスに届きます。",
-        uploadPhoto: "お写真のアップロード",
-        customPoem: "メッセージ・詩",
-        apiKey: "Gemini APIキー (AI自動作成)",
-        aiWrite: "AIで作成",
-        copyLink: "リンクをコピー",
-        downloadPng: "PNG画像をダウンロード",
-        togetherText: "両家親族とともに",
-        pleasureText: "皆様のご参列を心よりお待ちしております",
-        viewVenueMap: "会場の地図を見る",
-        rsvpNow: "ご出欠の確認 (RSVP)",
-        guestRsvpHeader: "ご出欠回答フォーム",
-        yourFullName: "お名前（フルネーム）",
-        attending: "ご出欠",
-        accept: "ご出席",
-        decline: "ご欠席",
-        guestCount: "ご同伴者様の人数",
-        submitRsvp: "回答を送信する",
-        autoplayPrompt: "画面をタップするとBGMが再生されます",
-        enableAudioBtn: "BGMを再生",
-        aiPrompt: "次のふたりのために、ロマンチックで短めの結婚メッセージ（2行）を作成してください: "
+      id: {
+        title: "UNDANGAN PERNIKAHAN",
+        subtitle: "Perayaan Digital",
+        cardTab: "Kartu Undangan",
+        galleryTab: "Galeri Foto",
+        together: "Bersama keluarga tercinta",
+        viewMap: "Lihat Peta Lokasi",
+        cardRsvpBtn: "KONFIRMASI RSVP",
+        rsvpHeading: "Formulir RSVP Tamu",
+        fullName: "Nama Lengkap Anda",
+        attending: "Konfirmasi Kehadiran",
+        guestCount: "Jumlah Tamu",
+        submitRsvp: "Kirim RSVP",
+        galleryTitle: "Galeri Foto Bahagia",
+        gallerySub: "Momen & Kenangan Indah"
       }
     };
 
-    const languageSelect = document.getElementById('languageSelect');
+    // DOM Elements
+    const langSelect = document.getElementById('langSelect');
     const themeSelect = document.getElementById('themeSelect');
     const animSelect = document.getElementById('animSelect');
-    const musicPresetSelect = document.getElementById('musicPresetSelect');
-    const customMusicUrlInput = document.getElementById('customMusicUrl');
-    const bgMusicPlayer = document.getElementById('bgMusicPlayer');
-    const musicToggleBtn = document.getElementById('musicToggleBtn');
-    const musicIcon = document.getElementById('musicIcon');
-    const noteAnimContainer = document.getElementById('noteAnimContainer');
-    const autoplayBanner = document.getElementById('autoplayBanner');
-    
+    const musicSelect = document.getElementById('musicSelect');
     const cardTemplate = document.getElementById('cardTemplate');
     const groomInput = document.getElementById('groom');
     const brideInput = document.getElementById('bride');
@@ -741,179 +517,113 @@
     const aiBtn = document.getElementById('aiBtn');
     const shareBtn = document.getElementById('shareBtn');
     const downloadBtn = document.getElementById('downloadBtn');
+    const bgAudio = document.getElementById('bgAudio');
 
-    let uploadedPhotoBase64 = '';
-    let isPlayingMusic = false;
-    let noteInterval = null;
+    // Page Toggle Buttons
+    const tabCardBtn = document.getElementById('tabCardBtn');
+    const tabGalleryBtn = document.getElementById('tabGalleryBtn');
+    const cardPage = document.getElementById('cardPage');
+    const galleryPage = document.getElementById('galleryPage');
+    const galleryGrid = document.getElementById('galleryGrid');
+    const emptyGalleryMsg = document.getElementById('emptyGalleryMsg');
+    const thumbnailList = document.getElementById('thumbnailList');
 
-    function getCurrentLang() {
-      return i18n[languageSelect.value] ? languageSelect.value : 'en';
-    }
+    // Lightbox Elements
+    const lightboxModal = document.getElementById('lightboxModal');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const closeLightboxBtn = document.getElementById('closeLightboxBtn');
 
-    function applyTranslations() {
-      const lang = getCurrentLang();
-      const text = i18n[lang];
+    // Array to store base64 strings of uploaded photos
+    let uploadedPhotoArray = [];
 
-      document.getElementById('mainHeaderTitle').textContent = text.headerTitle;
-      document.getElementById('lblCustomizeDetails').textContent = text.customizeDetails;
-      document.getElementById('lblLanguage').textContent = text.language;
-      document.getElementById('lblSelectTheme').textContent = text.selectTheme;
-      document.getElementById('lblCardAnimation').textContent = text.cardAnimation;
-      document.getElementById('lblBgMusic').textContent = text.bgMusic;
-      document.getElementById('lblGroomName').textContent = text.groomName;
-      document.getElementById('lblBrideName').textContent = text.brideName;
-      document.getElementById('lblEventDate').textContent = text.eventDate;
-      document.getElementById('lblEventTime').textContent = text.eventTime;
-      document.getElementById('lblVenueAddress').textContent = text.venueAddress;
-      document.getElementById('lblMapUrl').textContent = text.mapUrl;
-      document.getElementById('lblRsvpEmail').textContent = text.rsvpEmail;
-      document.getElementById('lblRsvpEmailHelp').textContent = text.rsvpEmailHelp;
-      document.getElementById('lblUploadPhoto').textContent = text.uploadPhoto;
-      document.getElementById('lblCustomPoem').textContent = text.customPoem;
-      document.getElementById('lblApiKey').textContent = text.apiKey;
-      document.getElementById('lblAiWrite').textContent = text.aiWrite;
-      document.getElementById('lblCopyLink').textContent = text.copyLink;
-      document.getElementById('lblDownloadPng').textContent = text.downloadPng;
+    // Tab Switching Logic
+    tabCardBtn.addEventListener('click', () => {
+      tabCardBtn.className = "flex-1 bg-slate-900 text-white py-2 px-4 rounded-xl text-xs font-semibold shadow transition flex items-center justify-center gap-2";
+      tabGalleryBtn.className = "flex-1 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 py-2 px-4 rounded-xl text-xs font-semibold shadow-sm transition flex items-center justify-center gap-2";
+      cardPage.classList.remove('hidden');
+      galleryPage.classList.add('hidden');
+    });
 
-      // Card Element Labels
-      document.getElementById('previewTogetherText').textContent = text.togetherText;
-      document.getElementById('previewPleasureText').textContent = text.pleasureText;
-      document.getElementById('lblViewVenueMap').textContent = text.viewVenueMap;
-      document.getElementById('lblRsvpNowBtn').textContent = text.rsvpNow;
-
-      // Guest Form Labels
-      document.getElementById('lblGuestRsvpHeader').textContent = text.guestRsvpHeader;
-      document.getElementById('lblYourFullName').textContent = text.yourFullName;
-      document.getElementById('lblAttending').textContent = text.attending;
-      document.getElementById('optAccept').textContent = text.accept;
-      document.getElementById('optDecline').textContent = text.decline;
-      document.getElementById('lblGuestCount').textContent = text.guestCount;
-      document.getElementById('lblSubmitRsvpBtn').textContent = text.submitRsvp;
-
-      // Autoplay Banner
-      document.getElementById('lblAutoplayPrompt').textContent = text.autoplayPrompt;
-      document.getElementById('lblEnableAudioBtn').textContent = text.enableAudioBtn;
-
-      updatePreview();
-    }
+    tabGalleryBtn.addEventListener('click', () => {
+      tabGalleryBtn.className = "flex-1 bg-slate-900 text-white py-2 px-4 rounded-xl text-xs font-semibold shadow transition flex items-center justify-center gap-2";
+      tabCardBtn.className = "flex-1 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 py-2 px-4 rounded-xl text-xs font-semibold shadow-sm transition flex items-center justify-center gap-2";
+      galleryPage.classList.remove('hidden');
+      cardPage.classList.add('hidden');
+    });
 
     function scrollToRsvp() {
       document.getElementById('rsvpSection').scrollIntoView({ behavior: 'smooth' });
     }
 
-    // Music Player Setup & Auto-play Handling
-    function getActiveMusicUrl() {
-      if (musicPresetSelect.value === 'custom') {
-        return customMusicUrlInput.value.trim();
-      }
-      return musicPresetSelect.value;
-    }
-
-    function syncMusicSource() {
-      const url = getActiveMusicUrl();
-      if (url) {
-        if (bgMusicPlayer.src !== url) {
-          bgMusicPlayer.src = url;
-          attemptAutoplay();
-        }
+    // Render Gallery Page Grid
+    function renderGallery() {
+      galleryGrid.innerHTML = '';
+      if (uploadedPhotoArray.length === 0) {
+        emptyGalleryMsg.classList.remove('hidden');
       } else {
-        pauseMusic();
-        bgMusicPlayer.src = '';
+        emptyGalleryMsg.classList.add('hidden');
+        uploadedPhotoArray.forEach((photoSrc, idx) => {
+          const imgCard = document.createElement('div');
+          imgCard.className = 'group relative overflow-hidden rounded-2xl shadow-md cursor-pointer aspect-square bg-slate-100';
+          imgCard.innerHTML = `
+            <img src="${photoSrc}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+            <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+              <i class="fa-solid fa-magnifying-glass-plus text-xl"></i>
+            </div>
+          `;
+          imgCard.addEventListener('click', () => {
+            lightboxImg.src = photoSrc;
+            lightboxModal.classList.remove('hidden');
+          });
+          galleryGrid.appendChild(imgCard);
+        });
       }
     }
 
-    function attemptAutoplay() {
-      const url = getActiveMusicUrl();
-      if (!url) return;
-
-      if (bgMusicPlayer.src !== url) {
-        bgMusicPlayer.src = url;
-      }
-
-      bgMusicPlayer.play().then(() => {
-        isPlayingMusic = true;
-        musicIcon.className = "fa-solid fa-pause text-rose-600";
-        autoplayBanner.classList.add('hidden');
-        startFloatingNotes();
-      }).catch(err => {
-        console.log("Autoplay blocked by browser policy. Displaying interaction banner:", err);
-        isPlayingMusic = false;
-        musicIcon.className = "fa-solid fa-play text-rose-600";
-        autoplayBanner.classList.remove('hidden');
+    // Render Thumbnails in Editor
+    function renderThumbnails() {
+      thumbnailList.innerHTML = '';
+      uploadedPhotoArray.forEach((photoSrc, idx) => {
+        const thumb = document.createElement('div');
+        thumb.className = 'relative w-12 h-12 rounded-lg overflow-hidden border border-slate-300';
+        thumb.innerHTML = `
+          <img src="${photoSrc}" class="w-full h-full object-cover">
+          <button type="button" class="absolute top-0 right-0 bg-red-600 text-white w-4 h-4 text-[9px] flex items-center justify-center rounded-bl" onclick="removePhoto(${idx})">×</button>
+        `;
+        thumbnailList.appendChild(thumb);
       });
     }
 
-    function forcePlayMusic() {
-      playMusic();
-      autoplayBanner.classList.add('hidden');
+    window.removePhoto = function(index) {
+      uploadedPhotoArray.splice(index, 1);
+      renderThumbnails();
+      renderGallery();
+      updatePreview();
+    };
+
+    // Update Language Texts
+    function updateLanguage() {
+      const lang = langSelect.value;
+      const dict = i18n[lang] || i18n.en;
+
+      document.getElementById('headerTitle').textContent = dict.title;
+      document.getElementById('headerSubtitle').textContent = dict.subtitle;
+      document.getElementById('tabCardLabel').textContent = dict.cardTab;
+      document.getElementById('tabGalleryLabel').textContent = dict.galleryTab;
+      document.getElementById('cardTogetherText').textContent = dict.together;
+      document.getElementById('viewMapText').textContent = dict.viewMap;
+      document.getElementById('cardRsvpBtnText').textContent = dict.cardRsvpBtn;
+      document.getElementById('rsvpHeading').innerHTML = `<i class="fa-solid fa-envelope-open-text text-rose-500"></i> ${dict.rsvpHeading}`;
+      document.getElementById('labelFullName').textContent = dict.fullName;
+      document.getElementById('labelAttending').textContent = dict.attending;
+      document.getElementById('labelGuestCount').textContent = dict.guestCount;
+      document.getElementById('submitRsvpBtn').textContent = dict.submitRsvp;
+      document.getElementById('galleryHeading').textContent = dict.galleryTitle;
+      document.getElementById('gallerySubheading').textContent = dict.gallerySub;
     }
 
-    function playMusic() {
-      const url = getActiveMusicUrl();
-      if (!url) return;
-      
-      if (bgMusicPlayer.src !== url) {
-        bgMusicPlayer.src = url;
-      }
-
-      bgMusicPlayer.play().then(() => {
-        isPlayingMusic = true;
-        musicIcon.className = "fa-solid fa-pause text-rose-600";
-        autoplayBanner.classList.add('hidden');
-        startFloatingNotes();
-      }).catch(err => {
-        console.log("Play failed:", err);
-      });
-    }
-
-    function pauseMusic() {
-      bgMusicPlayer.pause();
-      isPlayingMusic = false;
-      musicIcon.className = "fa-solid fa-music text-rose-600";
-      stopFloatingNotes();
-    }
-
-    function startFloatingNotes() {
-      stopFloatingNotes();
-      noteInterval = setInterval(() => {
-        if (!isPlayingMusic) return;
-        const note = document.createElement('i');
-        note.className = 'fa-solid fa-music text-rose-400 music-note-float text-xs';
-        note.style.left = `${Math.random() * 20 - 10}px`;
-        noteAnimContainer.appendChild(note);
-        setTimeout(() => note.remove(), 2000);
-      }, 700);
-    }
-
-    function stopFloatingNotes() {
-      if (noteInterval) clearInterval(noteInterval);
-      noteAnimContainer.innerHTML = '';
-    }
-
-    musicToggleBtn.addEventListener('click', () => {
-      if (isPlayingMusic) {
-        pauseMusic();
-      } else {
-        playMusic();
-      }
-    });
-
-    musicPresetSelect.addEventListener('change', () => {
-      if (musicPresetSelect.value === 'custom') {
-        customMusicUrlInput.classList.remove('hidden');
-      } else {
-        customMusicUrlInput.classList.add('hidden');
-      }
-      syncMusicSource();
-    });
-
-    customMusicUrlInput.addEventListener('input', syncMusicSource);
-
-    // Live Card Update
+    // Live update preview
     function updatePreview() {
-      const lang = getCurrentLang();
-      const text = i18n[lang];
-
       const groom = groomInput.value || 'Groom';
       const bride = brideInput.value || 'Bride';
       const eventDate = dateInput.value;
@@ -926,17 +636,16 @@
       
       if (eventDate) {
         const parsedDate = new Date(eventDate);
-        const localeCode = lang === 'id' ? 'id-ID' : lang === 'es' ? 'es-ES' : lang === 'fr' ? 'fr-FR' : lang === 'de' ? 'de-DE' : lang === 'ja' ? 'ja-JP' : 'en-US';
-        document.getElementById('previewDate').textContent = parsedDate.toLocaleDateString(localeCode, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        document.getElementById('previewDate').textContent = parsedDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
       } else {
         document.getElementById('previewDate').textContent = '';
       }
 
-      document.getElementById('previewTime').textContent = time ? `${text.atPrefix} ${time}` : '';
+      document.getElementById('previewTime').textContent = time ? `At ${time}` : '';
       document.getElementById('previewVenue').textContent = venue;
       document.getElementById('previewStory').textContent = story ? `"${story.replace(/"/g, '')}"` : '';
 
-      // Map Link
+      // Map Link handling
       const mapContainer = document.getElementById('mapLinkContainer');
       const mapLink = document.getElementById('previewMapLink');
       if (mapUrl) {
@@ -946,231 +655,11 @@
         mapContainer.classList.add('hidden');
       }
 
-      // Photo
+      // Avatar Photo handling (using first photo in array)
       const photoContainer = document.getElementById('photoPreviewContainer');
       const previewImg = document.getElementById('previewImg');
-      if (uploadedPhotoBase64) {
-        previewImg.src = uploadedPhotoBase64;
+      if (uploadedPhotoArray.length > 0) {
+        previewImg.src = uploadedPhotoArray[0];
         photoContainer.classList.remove('hidden');
       } else {
-        photoContainer.classList.add('hidden');
-      }
-    }
-
-    // Apply Animation and Theme Classes
-    function applyCardStyles() {
-      const themeClass = themeSelect.value;
-      const animClass = animSelect.value === 'none' ? '' : animSelect.value;
-      cardTemplate.className = `${themeClass} ${animClass} w-[380px] sm:w-[420px] rounded-3xl p-6 sm:p-8 shadow-2xl text-center relative overflow-hidden transition-all duration-300 flex flex-col justify-between`;
-    }
-
-    themeSelect.addEventListener('change', applyCardStyles);
-    animSelect.addEventListener('change', applyCardStyles);
-    languageSelect.addEventListener('change', applyTranslations);
-
-    // Handle Photo Upload
-    photoUploadInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(uploadEvent) {
-          uploadedPhotoBase64 = uploadEvent.target.result;
-          updatePreview();
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    [groomInput, brideInput, dateInput, timeInput, venueInput, mapUrlInput, rsvpEmailInput, storyInput].forEach(input => {
-      input.addEventListener('input', updatePreview);
-    });
-
-    // Handle Guest RSVP Submission
-    document.getElementById('guestRsvpForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const guestName = document.getElementById('guestName').value;
-      const attendance = document.getElementById('guestAttendance').value;
-      const count = document.getElementById('guestCount').value;
-      const targetEmail = rsvpEmailInput.value.trim();
-
-      if (!targetEmail) {
-        alert("The couple has not provided an RSVP destination email yet.");
-        return;
-      }
-
-      const subject = encodeURIComponent(`RSVP Response: ${guestName} - ${attendance}`);
-      const body = encodeURIComponent(`Hello,\n\nYou have received a new RSVP response for the wedding of ${groomInput.value} & ${brideInput.value}:\n\nGuest Name: ${guestName}\nStatus: ${attendance}\nNumber of Guests: ${count}\n\nSent via Digital Wedding Invitation Platform.`);
-      
-      window.location.href = `mailto:${targetEmail}?subject=${subject}&body=${body}`;
-    });
-
-    // Global First Interaction Autoplay Fallback Trigger
-    const globalAudioUnlock = () => {
-      if (!isPlayingMusic) {
-        attemptAutoplay();
-      }
-      document.removeEventListener('click', globalAudioUnlock);
-      document.removeEventListener('touchstart', globalAudioUnlock);
-    };
-    document.addEventListener('click', globalAudioUnlock);
-    document.addEventListener('touchstart', globalAudioUnlock);
-
-    // Load URL Query Parameters & Handle Recipient Mode
-    function loadFromUrlParams() {
-      const urlParams = new URLSearchParams(window.location.search);
-      
-      if (urlParams.toString().length > 0) {
-        // Hide editor panel completely for recipient view
-        document.getElementById('editorPanel').classList.add('hidden');
-        
-        const previewSec = document.getElementById('previewSection');
-        previewSec.className = "col-span-12 flex flex-col items-center justify-center space-y-6 w-full";
-
-        if (urlParams.has('g') && urlParams.has('b')) {
-          document.getElementById('headerSubtitle').textContent = `${urlParams.get('g')} & ${urlParams.get('b')}'s Wedding`;
-        }
-      }
-
-      if (urlParams.has('lang')) languageSelect.value = urlParams.get('lang');
-      if (urlParams.has('g')) groomInput.value = urlParams.get('g');
-      if (urlParams.has('b')) brideInput.value = urlParams.get('b');
-      if (urlParams.has('d')) dateInput.value = urlParams.get('d');
-      if (urlParams.has('t')) timeInput.value = urlParams.get('t');
-      if (urlParams.has('v')) venueInput.value = urlParams.get('v');
-      if (urlParams.has('m')) mapUrlInput.value = urlParams.get('m');
-      if (urlParams.has('e')) rsvpEmailInput.value = urlParams.get('e');
-      if (urlParams.has('s')) storyInput.value = urlParams.get('s');
-      if (urlParams.has('anim')) animSelect.value = urlParams.get('anim');
-      
-      if (urlParams.has('music')) {
-        const m = urlParams.get('music');
-        if (m) {
-          const matchedOption = Array.from(musicPresetSelect.options).find(opt => opt.value === m);
-          if (matchedOption) {
-            musicPresetSelect.value = m;
-          } else {
-            musicPresetSelect.value = 'custom';
-            customMusicUrlInput.value = m;
-            customMusicUrlInput.classList.remove('hidden');
-          }
-        }
-      }
-
-      if (urlParams.has('p')) {
-        uploadedPhotoBase64 = decodeURIComponent(urlParams.get('p'));
-      }
-      
-      if (urlParams.has('theme')) {
-        themeSelect.value = urlParams.get('theme');
-      }
-
-      applyTranslations();
-      applyCardStyles();
-      syncMusicSource();
-    }
-
-    // Copy Link Generator
-    shareBtn.addEventListener('click', () => {
-      const params = new URLSearchParams({
-        lang: languageSelect.value,
-        g: groomInput.value,
-        b: brideInput.value,
-        d: dateInput.value,
-        t: timeInput.value,
-        v: venueInput.value,
-        m: mapUrlInput.value,
-        e: rsvpEmailInput.value,
-        s: storyInput.value,
-        theme: themeSelect.value,
-        anim: animSelect.value,
-        music: getActiveMusicUrl()
-      });
-
-      if (uploadedPhotoBase64) {
-        params.set('p', uploadedPhotoBase64);
-      }
-
-      const shareableUrl = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
-      
-      navigator.clipboard.writeText(shareableUrl).then(() => {
-        alert("✨ Recipient invitation URL copied to clipboard!\n\nWhen guests open this link, the editor panel is automatically hidden, playing background music and opening with your selected language and animation.");
-      }).catch(err => {
-        console.error("Clipboard Error: ", err);
-      });
-    });
-
-    // PNG Download via html2canvas
-    downloadBtn.addEventListener('click', () => {
-      downloadBtn.disabled = true;
-      downloadBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Rendering...`;
-
-      // Hide music icon temporarily for clean image export
-      document.getElementById('musicWidget').style.display = 'none';
-
-      html2canvas(document.getElementById('cardContainer'), {
-        scale: 3,
-        backgroundColor: null,
-        useCORS: true
-      }).then(canvas => {
-        const image = canvas.toDataURL('image/png');
-        const link = document.createElement('a');
-        link.download = `${groomInput.value}_and_${brideInput.value}_wedding_invitation.png`;
-        link.href = image;
-        link.click();
-
-        document.getElementById('musicWidget').style.display = 'block';
-        downloadBtn.disabled = false;
-        downloadBtn.innerHTML = `<i class="fa-solid fa-file-arrow-down"></i> <span id="lblDownloadPng">${i18n[getCurrentLang()].downloadPng}</span>`;
-      }).catch(err => {
-        console.error("Canvas render error:", err);
-        document.getElementById('musicWidget').style.display = 'block';
-        alert("Could not generate image download.");
-        downloadBtn.disabled = false;
-        downloadBtn.innerHTML = `<i class="fa-solid fa-file-arrow-down"></i> <span id="lblDownloadPng">${i18n[getCurrentLang()].downloadPng}</span>`;
-      });
-    });
-
-    // AI Writer Integration (Gemini 2.5 Flash API)
-    aiBtn.addEventListener('click', async () => {
-      const apiKey = document.getElementById('apiKey').value.trim();
-      if (!apiKey) {
-        alert("Please paste your Gemini API Key first!");
-        return;
-      }
-
-      const lang = getCurrentLang();
-      const promptText = `${i18n[lang].aiPrompt} ${groomInput.value} and ${brideInput.value}. Under 20 words in ${languageSelect.options[languageSelect.selectedIndex].text} language.`;
-
-      aiBtn.disabled = true;
-      aiBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Writing...`;
-
-      try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{
-              parts: [{ text: promptText }]
-            }]
-          })
-        });
-
-        const data = await response.json();
-        const aiText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (aiText) {
-          storyInput.value = aiText.trim();
-          updatePreview();
-        }
-      } catch (err) {
-        console.error("Gemini API Error:", err);
-        alert("Error connecting to Gemini API.");
-      } finally {
-        aiBtn.disabled = false;
-        aiBtn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> <span id="lblAiWrite">${i18n[getCurrentLang()].aiWrite}</span>`;
-      }
-    });
-
-    window.addEventListener('DOMContentLoaded', loadFromUrlParams);
-  </script>
-</body>
-</html>
+        photoContainer.classList.add('
